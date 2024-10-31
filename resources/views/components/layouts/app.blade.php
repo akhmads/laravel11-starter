@@ -82,6 +82,9 @@
                     <x-menu-item title="CRUD Example" link="/crud-example"/>
                     <x-menu-item title="Invoice Example" link="/invoice"/>
                 </x-menu-sub>
+                <x-menu-sub title="Form" icon="o-pencil-square">
+                    <x-menu-item title="Form" link="/form"/>
+                </x-menu-sub>
                 <x-menu-sub title="Choice" icon="o-list-bullet">
                     <x-menu-item title="Choices Offline Single" link="/choices-offline-single"/>
                     <x-menu-item title="Choices Offline Multiple" link="/choices-offline-multiple"/>

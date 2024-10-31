@@ -16,6 +16,10 @@ Route::middleware('auth')->group(function () {
     Volt::route('/crud-example/create', 'crud-example.create');
     Volt::route('/crud-example/{post}/edit', 'crud-example.edit');
 
+    Volt::route('/form', 'form.index');
+    Volt::route('/crud-example/create', 'crud-example.create');
+    Volt::route('/crud-example/{post}/edit', 'crud-example.edit');
+
     Volt::route('/invoice', 'invoice.index');
     Volt::route('/invoice/create', 'invoice.create');
     Volt::route('/invoice/{invoice}/edit', 'invoice.edit');
