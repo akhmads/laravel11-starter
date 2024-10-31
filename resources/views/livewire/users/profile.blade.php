@@ -18,14 +18,16 @@ new class extends Component {
     public $password_confirmation = '';
     public $avatar = '';
     public $storedAvatar = '';
-    public $role = '';
+    // public $branch = '';
+    // public $role = '';
 
     public function mount(): void
     {
         $this->name = auth()->user()->name;
         $this->email = auth()->user()->email;
         $this->storedAvatar = auth()->user()->avatar;
-        $this->role = auth()->user()->role;
+        // $this->branch = auth()->user()->branch->name;
+        // $this->role = auth()->user()->role;
         $this->avatar = '';
     }
 
@@ -46,7 +48,7 @@ new class extends Component {
 
         auth()->user()->update($data);
 
-        $this->success('Profile has been updated.');
+        $this->success('Profile has been updated.', redirectTo: '/user/profile', position: 'toast-bottom toast-end');
     }
 
     public function changePassword(): void
@@ -64,7 +66,7 @@ new class extends Component {
 
         auth()->user()->update($data);
 
-        $this->success('Password has been updated.');
+        $this->success('Password has been updated.', position: 'toast-bottom toast-end');
     }
 }; ?>
 
@@ -81,8 +83,8 @@ new class extends Component {
                         {{-- <div class="space-y-4 xl:space-y-0 xl:grid grid-cols-2 gap-4"> --}}
                             <x-input label="Name" wire:model="name" />
                             <x-input label="Email" wire:model="email" />
-                            {{-- <x-input label="Store" wire:model="store" readonly /> --}}
-                            {{-- <x-input label="Role" wire:model="role" readonly /> --}}
+                            {{-- <x-input label="Branch" wire:model="branch" readonly />
+                            <x-input label="Role" wire:model="role" readonly /> --}}
                         {{-- </div> --}}
                     </div>
                     <x-slot:actions>
