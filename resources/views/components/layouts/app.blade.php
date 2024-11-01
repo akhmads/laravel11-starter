@@ -81,6 +81,7 @@
                 <x-menu-sub title="Example" icon="o-document-text">
                     <x-menu-item title="CRUD Example" link="/crud-example"/>
                     <x-menu-item title="Invoice Example" link="/invoice"/>
+                    <x-menu-item title="Playground" link="/playground"/>
                 </x-menu-sub>
                 <x-menu-sub title="Form" icon="o-pencil-square">
                     <x-menu-item title="Form" link="/form"/>
