@@ -105,11 +105,17 @@ new class extends Component {
         $this->drawer = false;
         $this->success('Block has been updated.');
     }
+
+    public function tes()
+    {
+        dump('xxx');
+    }
 }; ?>
 <div>
     <x-header title="Form" separator />
 
-    <div class="lg:max-w-screen-md space-y-5">
+    {{-- lg:max-w-screen-md --}}
+    <div class="space-y-5">
         <x-card title="View Component" separator progress-indicator>
             <div class="space-y-5">
                 <div class="grid grid-cols-4 gap-2">
@@ -125,6 +131,11 @@ new class extends Component {
                      {{ $content['body']->text ?? '' }}
                 </div>
                 @endforeach
+
+                <div class="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                    <x-ui.shortcut href="/crud-example" wire:navigate icon="o-pencil-square" title="Create Order" />
+                    <x-ui.shortcut href="/invoice" wire:navigate icon="o-envelope" title="Surat Masuk" />
+                </div>
             </div>
         </x-card>
     </div>

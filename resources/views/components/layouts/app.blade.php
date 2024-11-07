@@ -78,6 +78,11 @@
                 @endif
 
                 <x-menu-item title="Home" icon="o-home" link="/home" />
+                <x-menu-item icon="o-bell-alert" link="/notification">
+                    <div class="flex justify-between gap-2">
+                        Notifications <x-badge value="2" class="bg-primary" />
+                    </div>
+                </x-menu-item>
                 <x-menu-sub title="Example" icon="o-document-text">
                     <x-menu-item title="CRUD Example" link="/crud-example"/>
                     <x-menu-item title="Invoice Example" link="/invoice"/>
@@ -95,6 +100,9 @@
                 <x-menu-sub title="UI" icon="o-computer-desktop">
                     <x-menu-item title="Badge" link="/ui/badge"/>
                     <x-menu-item title="Card" link="/ui/card"/>
+                </x-menu-sub>
+                <x-menu-sub title="System" icon="o-wrench-screwdriver">
+                    <x-menu-item title="Logs" link="/log-viewer"/>
                 </x-menu-sub>
 
                 @can('admin')

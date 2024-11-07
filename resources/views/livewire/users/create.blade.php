@@ -1,10 +1,10 @@
 <?php
 
+use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Livewire\Volt\Component;
-use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 use App\Enums\Role;
 use App\Enums\ActiveStatus;
@@ -21,11 +21,16 @@ new class extends Component {
     public $role = Role::admin;
     public $status = ActiveStatus::active;
 
+    public function mount(): void
+    {
+
+    }
+
     public function save(): void
     {
         $data = $this->validate([
             'name' => 'required',
-            'email' => ['required', 'email', Rule::unique('users')],
+            'email' => ['required', Rule::unique('users')],
             'password' => 'required|confirmed',
             'password_confirmation' => 'required',
             'avatar' => 'nullable|image|max:1024',
@@ -45,7 +50,7 @@ new class extends Component {
 
         $user = User::create($data);
 
-        $this->success('User has been created.', redirectTo: '/cp/users');
+        $this->success('User has been created.', redirectTo: '/users');
     }
 }; ?>
 
@@ -73,7 +78,7 @@ new class extends Component {
                 </div>
             </x-card>
             <x-slot:actions>
-                <x-button label="Cancel" link="/cp/users" />
+                <x-button label="Cancel" link="/users" />
                 <x-button label="Save" icon="o-paper-airplane" spinner="save" type="submit" class="btn-primary" />
             </x-slot:actions>
         </x-form>

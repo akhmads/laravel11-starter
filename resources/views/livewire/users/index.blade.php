@@ -1,48 +1,53 @@
 <?php
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Volt\Component;
+use Livewire\Attributes\Session;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
-use App\Traits\TableHelper;
 use App\Models\User;
 
 new class extends Component {
-    use Toast, WithPagination, TableHelper;
+    use Toast, WithPagination;
 
+    #[Session(key: 'users_per_page')]
     public int $perPage = 10;
-    public string $search = '';
+
+    #[Session(key: 'users_name')]
+    public string $name = '';
+
+    public int $filterCount = 0;
     public bool $drawer = false;
     public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
 
-    public string $role = '';
-    public string $status = '';
+    public function mount(): void
+    {
+        $this->updateFilterCount();
+    }
 
-    // Clear filters
     public function clear(): void
     {
         $this->warning('Filters cleared');
-        $this->reset(['search','role','status']);
+        $this->reset(['name']);
         $this->resetPage();
+        $this->updateFilterCount();
     }
 
-    // Delete action
     public function delete(User $user): void
     {
         $user->delete();
         $this->warning("User has been deleted");
     }
 
-    // Table headers
     public function headers(): array
     {
         return [
             ['key' => 'avatar', 'label' => 'Avatar', 'sortable' => false],
             ['key' => 'name', 'label' => 'Name'],
             ['key' => 'email', 'label' => 'Email'],
-            ['key' => 'role', 'label' => 'Role'],
             ['key' => 'status', 'label' => 'Status'],
         ];
     }
@@ -51,18 +56,19 @@ new class extends Component {
     {
         return User::query()
         ->orderBy(...array_values($this->sortBy))
-        ->filterLike('name', $this->search)
-        ->filterWhere('role', $this->role)
-        ->filterWhere('status', $this->status)
+        ->filterLike('name', $this->name)
         ->paginate($this->perPage);
     }
 
     public function with(): array
     {
+        if (!isset($this->satker_id)) {
+            $this->satker_id = '';
+        }
+
         return [
             'users' => $this->users(),
             'headers' => $this->headers(),
-            'pageList' => $this->pageList(),
         ];
     }
 
@@ -70,28 +76,32 @@ new class extends Component {
     {
         if (! is_array($property) && $property != "") {
             $this->resetPage();
+            $this->updateFilterCount();
         }
+    }
+
+    public function updateFilterCount(): void
+    {
+        $count = 0;
+        if (!empty($this->name)) {
+            $count++;
+        }
+        $this->filterCount = $count;
     }
 }; ?>
 
 <div>
-    <!-- HEADER -->
+    {{-- HEADER --}}
     <x-header title="Users" separator progress-indicator>
-        <x-slot:middle class="!justify-end">
-            <div class="flex gap-4 items-center">
-                <x-select wire:model.live="perPage" :options="$pageList" />
-                <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
-            </div>
-        </x-slot:middle>
         <x-slot:actions>
-            <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
-            <x-button label="Create" link="/cp/users/create" responsive icon="o-plus" class="btn-primary" />
+            <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" badge="{{ $filterCount }}" />
+            <x-button label="Create" link="/users/create" responsive icon="o-plus" class="btn-primary" />
         </x-slot:actions>
     </x-header>
 
-    <!-- TABLE  -->
+    {{-- TABLE --}}
     <x-card>
-        <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy" link="/cp/users/{id}/edit" with-pagination>
+        <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy" with-pagination per-page="perPage" show-empty-text>
             @scope('cell_avatar', $user)
             <x-avatar image="{{ $user->avatar ?? asset('assets/img/default-avatar.png') }}" class="!w-8" />
             @endscope
@@ -100,21 +110,18 @@ new class extends Component {
             @endscope
             @scope('actions', $user)
             <div class="flex items-center gap-0">
-                <x-button link="/cp/users/{{$user['id']}}/edit" icon="o-pencil-square" class="btn-ghost btn-sm text-blue-500" />
-                <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" wire:confirm="Are you sure?" spinner="delete({{ $user['id'] }})" class="btn-ghost btn-sm text-red-500" />
+                <x-button link="users/{{ $user->id }}/edit" icon="o-pencil-square" class="btn-ghost btn-sm text-blue-500" />
+                <x-button icon="o-trash" wire:click="delete({{ $user->id }})" wire:confirm="Are you sure?" spinner="delete({{ $user->id }})" class="btn-ghost btn-sm text-red-500" />
             </div>
             @endscope
         </x-table>
     </x-card>
 
-    <!-- FILTER DRAWER -->
+    {{-- FILTER DRAWER --}}
     <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
         <div class="grid gap-5">
-            <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass" @keydown.enter="$wire.drawer = false" />
-            <x-select label="Role" wire:model.live="role" :options="\App\Enums\Role::toSelect(true)" />
-            <x-select label="Status" wire:model.live="status" :options="\App\Enums\ActiveStatus::toSelect(true)" />
+            <x-input label="Name" wire:model.live.debounce="name" />
         </div>
-
         <x-slot:actions>
             <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
             <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />

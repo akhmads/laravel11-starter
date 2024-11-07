@@ -32,6 +32,15 @@ Route::middleware('auth')->group(function () {
     Volt::route('/choices-server-multiple', 'choices-example.choices-server-multiple');
     Volt::route('/choices-custom', 'choices-example.choices2');
 
+    Volt::route('/notification', 'notification.index');
+    Volt::route('/notification/create', 'notification.create');
+    Volt::route('/notification/{notification}/edit', 'notification.edit');
+    Volt::route('/notification/{notification}/view', 'notification.view');
+
+    Volt::route('/users', 'users.index');
+    Volt::route('/users/create', 'users.create');
+    Volt::route('/users/{user}/edit', 'users.edit');
+
     Volt::route('/ui/badge', 'ui.badge');
     Volt::route('/ui/card', 'ui.card');
 

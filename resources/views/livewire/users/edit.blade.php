@@ -22,6 +22,7 @@ new class extends Component {
     public $avatar = '';
     public $role = Role::admin;
     public $status = ActiveStatus::active;
+    public Collection $satkerSearchable;
     public $storedAvatar = '';
 
     public function mount(): void
@@ -37,7 +38,7 @@ new class extends Component {
     {
         $data = $this->validate([
             'name' => 'required',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($this->user)],
+            'email' => ['required', Rule::unique('users')->ignore($this->user)],
             'password' => 'nullable|confirmed',
             'password_confirmation' => 'nullable',
             'avatar' => 'nullable|image|max:1024',
@@ -61,7 +62,7 @@ new class extends Component {
 
         $this->user->update($data);
 
-        $this->success('User has been updated.', redirectTo: '/cp/users');
+        $this->success('User has been updated.', redirectTo: '/users');
     }
 }; ?>
 
@@ -79,7 +80,7 @@ new class extends Component {
                         <x-input label="Email" wire:model="email" />
                     </div>
                     <div class="space-y-4 xl:space-y-0 xl:grid grid-cols-2 gap-4">
-                        <x-input label="Password" wire:model="password" type="password" hint="Password changes are optional" />
+                        <x-input label="Password" wire:model="password" type="password" />
                         <x-input label="Confirm Password" wire:model="password_confirmation" type="password" />
                     </div>
                     <div class="space-y-4 xl:space-y-0 xl:grid grid-cols-2 gap-4">
@@ -89,7 +90,7 @@ new class extends Component {
                 </div>
             </x-card>
             <x-slot:actions>
-                <x-button label="Cancel" link="/cp/users" />
+                <x-button label="Cancel" link="/users" />
                 <x-button label="Save" icon="o-paper-airplane" spinner="save" type="submit" class="btn-primary" />
             </x-slot:actions>
         </x-form>
